@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUILTY v6 - Enhanced Detective Game</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background-color: #ecf0f1;
+            --accent-color: #e74c3c;
+            --text-color: #2c3e50;
+            --card-bg: #ffffff;
+            --border-color: #bdc3c7;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--background-color) 0%, #d5dbdb 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--header-bg, var(--card-bg));
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            font-weight: 300;
+        }
+
+        /* Main Menu Styles */
+        .main-menu {
+            text-align: center;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .difficulty-selection {
+            margin: 30px 0;
+        }
+
+        .difficulty-selection label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .difficulty-select {
+            padding: 12px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: #1a252f;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+        }
+
+        .btn-warning:hover {
+            background: #d68910;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        /* Game Screen Styles */
+        .game-screen {
+            display: none;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .game-info {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            display: block;
+            font-size: 0.9em;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .timer {
+            font-family: 'Courier New', monospace;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .confidence-high { color: var(--success-color); }
+        .confidence-medium { color: var(--warning-color); }
+        .confidence-low { color: var(--danger-color); }
+
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .scenario-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .scenario-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .scenario-section p {
+            line-height: 1.6;
+            color: var(--text-color);
+            font-size: 1.1em;
+        }
+
+        /* Suspects Grid */
+        .suspects-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .suspect-card {
+            border: 2px solid var(--card-border, var(--border-color));
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: border 0.3s, background 0.3s;
+        }
+
+        .suspect-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: var(--secondary-color);
+        }
+
+        .suspect-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .suspect-header h3 {
+            color: var(--primary-color);
+            font-size: 1.3em;
+            margin: 0;
+        }
+
+        .suspicion-meter {
+            position: relative;
+            width: 100px;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .suspicion-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .suspicion-high .suspicion-fill { background: var(--danger-color); }
+        .suspicion-medium .suspicion-fill { background: var(--warning-color); }
+        .suspicion-low .suspicion-fill { background: var(--success-color); }
+
+        .suspicion-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .suspect-traits {
+            margin: 15px 0;
+            min-height: 60px;
+        }
+
+        .trait {
+            display: inline-block;
+            padding: 6px 12px;
+            margin: 3px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .trait-incriminating {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .trait-exonerating {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+        }
+
+        .trait-neutral {
+            background: rgba(149, 165, 166, 0.1);
+            color: #7f8c8d;
+            border: 1px solid rgba(149, 165, 166, 0.3);
+        }
+
+        .no-traits {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .suspect-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .investigate-btn, .accuse-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .investigate-btn {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .investigate-btn:hover {
+            background: #2980b9;
+        }
+
+        .accuse-btn {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .accuse-btn:hover {
+            background: #c0392b;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--border-color);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .accusation-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .game-result {
+            text-align: center;
+        }
+
+        .result-text {
+            font-size: 1.2em;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .result-text.correct {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+        }
+
+        .result-text.incorrect {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .game-stats {
+            background: var(--background-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .culprit-reveal {
+            background: var(--background-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .statistics {
+            max-width: 500px;
+        }
+
+        .stat-group {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: var(--background-color);
+            border-radius: 8px;
+        }
+
+        .stat-group h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+        }
+
+        .difficulty-stat {
+            margin: 8px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .game-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .game-info {
+                justify-content: center;
+            }
+
+            .suspects-container {
+                grid-template-columns: 1fr;
+            }
+
+            .suspect-actions {
+                flex-direction: column;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+            }
+        }
+
+        /* Hidden by default */
+        .statistics-screen {
+            display: none;
+        }
+
+        /* Initial Suspect and Trait Guide Styles */
+        .initial-suspect-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .initial-suspect-header h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .initial-suspect-note {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .initial-suspect-traits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .initial-trait {
+            padding: 15px;
+            border-radius: 8px;
+            background: var(--background-color);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .initial-trait.green {
+            background: rgba(39, 174, 96, 0.1);
+            border-color: var(--success-color);
+        }
+
+        .initial-trait.yellow {
+            background: rgba(243, 156, 18, 0.1);
+            border-color: var(--warning-color);
+        }
+
+        .initial-trait.gray {
+            background: rgba(149, 165, 166, 0.1);
+            border-color: var(--border-color);
+        }
+
+        .initial-trait-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+            font-size: 0.9em;
+        }
+
+        .initial-trait-value {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .color-legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            padding: 15px;
+            background: var(--background-color);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            color: var(--text-color);
+        }
+
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .color-box.green {
+            background: var(--success-color);
+        }
+
+        .color-box.yellow {
+            background: var(--warning-color);
+        }
+
+        .color-box.gray {
+            background: var(--border-color);
+        }
+
+        .trait-guide-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .trait-guide-header h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .trait-guide-note {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .trait-guide-content {
+            display: grid;
+            gap: 20px;
+        }
+
+        .trait-guide-item {
+            padding: 15px;
+            background: var(--background-color);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .trait-guide-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .trait-scale-container {
+            position: relative;
+            height: 60px;
+            margin: 10px 0;
+        }
+
+        .trait-scale-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border-color);
+            transform: translateY(-50%);
+        }
+
+        .trait-values-scale {
+            position: relative;
+            height: 100%;
+        }
+
+        .trait-scale-item {
+            position: absolute;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .trait-scale-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            margin: 0 auto 5px;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .trait-scale-dot.first {
+            background: var(--success-color);
+        }
+
+        .trait-scale-dot.last {
+            background: var(--danger-color);
+        }
+
+        .trait-scale-label {
+            font-size: 0.8em;
+            font-weight: 600;
+            color: var(--text-color);
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .trait-proximity-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--secondary-color);
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+
+        /* Game Board Styles */
+        .game-board {
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            min-height: 100px;
+        }
+
+        .crime-box {
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .guess-counter {
+            display: inline-block;
+            padding: 10px 15px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .confidence-display {
+            margin: 10px 0;
+            padding: 15px;
+            background: var(--background-color);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .confidence-meter {
+            width: 100%;
+            height: 20px;
+            background: var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danger-color) 0%, var(--warning-color) 50%, var(--success-color) 100%);
+            transition: width 0.3s ease;
+        }
+
+        .confidence-text {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .suspect-card.eliminated {
+            opacity: 0.4;
+            filter: grayscale(100%) blur(1px);
+            box-shadow: none;
+            position: relative;
+            z-index: 0;
+            transform: scale(0.97);
+            transition: opacity 0.3s, filter 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+        .suspect-card.eliminated::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                135deg,
+                rgba(200,200,200,0.3) 0px,
+                rgba(200,200,200,0.3) 8px,
+                transparent 8px,
+                transparent 16px
+            );
+            border-radius: 15px;
+            pointer-events: none;
+        }
+        .suspect-card.eliminated .suspect-name {
+            text-decoration: line-through;
+            color: #888 !important;
+            opacity: 0.7;
+        }
+        .suspect-card.eliminated .suspect-job {
+            color: #aaa !important;
+            opacity: 0.7;
+        }
+        .suspect-card.eliminated .trait-item,
+        .suspect-card.eliminated .trait-label,
+        .suspect-card.eliminated .trait-value {
+            color: #aaa !important;
+            opacity: 0.7;
+        }
+        .suspect-card:not(.eliminated) {
+            opacity: 1;
+            filter: none;
+            z-index: 1;
+        }
+        .suspect-card .accuse-btn:disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>GUILTY</h1>
+            <div class="subtitle">Enhanced Detective Game v6</div>
+        </div>
+
+        <!-- Main Menu -->
+        <div id="main-menu" class="main-menu">
+            <h2>Welcome, Detective</h2>
+            <p>Use your investigative skills to identify the culprit from a list of suspects. Each case presents unique challenges with different themes and difficulty levels.</p>
+            
+            <div class="difficulty-selection">
+                <label for="difficulty-select">Choose Difficulty:</label>
+                <select id="difficulty-select" class="difficulty-select">
+                    <option value="easy">Easy (6 suspects)</option>
+                    <option value="medium" selected>Medium (8 suspects)</option>
+                    <option value="hard">Hard (10 suspects)</option>
+                </select>
+            </div>
+
+            <div>
+                <button id="start-game" class="btn btn-primary">Start Investigation</button>
+                <button id="stats-btn" class="btn btn-secondary">View Statistics</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="game-screen">
+            <div class="game-header">
+                <div class="game-info">
+                    <div class="info-item">
+                        <span class="info-label">Time</span>
+                        <div id="game-timer" class="info-value timer">0:00</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Confidence</span>
+                        <div id="confidence-level" class="info-value confidence-high">100%</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Viable Suspects</span>
+                        <div id="viable-count" class="info-value">0</div>
+                    </div>
+                </div>
+                
+                <div class="game-controls">
+                    <button id="hint-btn" class="btn btn-warning">Get Hint</button>
+                    <button id="accuse-btn" class="btn btn-danger">Make Accusation</button>
+                    <button id="new-game" class="btn btn-success">New Game</button>
+                    <button id="back-to-menu" class="btn btn-secondary">Main Menu</button>
+                </div>
+            </div>
+
+            <div id="scenario-description" class="scenario-section">
+                <h2 id="crimeTitle"></h2>
+                <p id="crimeDescription"></p>
+            </div>
+
+            <div id="crime-box" class="crime-box"></div>
+            <div id="gameBoard" class="game-board"></div>
+
+            <div id="suspectsSection">
+                <div id="suspectsGrid" class="suspects-container"></div>
+            </div>
+
+            <div id="gameOver" class="game-over" style="display: none;">
+                <h2 id="gameOverTitle"></h2>
+                <div id="gameOverMessage"></div>
+                <button onclick="GameManager.shareResults()" class="btn btn-primary">Share Results</button>
+            </div>
+        </div>
+
+        <!-- Statistics Screen -->
+        <div id="statistics-screen" class="statistics-screen">
+            <!-- Statistics content will be inserted here via modal -->
+        </div>
+    </div>
+
+    <script src="guilty-game-js.js"></script>
+</body>
+</html> 
