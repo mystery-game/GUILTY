@@ -293,6 +293,23 @@ const GameManager = (function() {
                 { title: "Exchange Student", access: "Student", knowledge: "Basic" },
                 { title: "Security Officer", access: "Staff", knowledge: "Basic" }
             ]
+        },
+        {
+            id: 'gallery_heist',
+            title: "The Art Gallery Heist",
+            description: "A priceless painting was stolen from the prestigious Modern Art Gallery. The thief struck during the VIP preview event. Security footage shows they knew the guard rotation perfectly.",
+            setting: 'gallery',
+            traits: {
+                presence: ['Not Invited', 'Brief Visit', 'Half Time', 'Most Night', 'All Night'],
+                finances: ['Extreme', 'High', 'Moderate', 'Low', 'None'],
+                connections: ['Deep', 'Some', 'Rumors', 'Clean', 'Unknown'],
+                reputation: ['Ruined', 'Damaged', 'Questioned', 'Solid', 'Impeccable']
+            },
+            suspectJobs: [
+                "Gallery Owner", "Art Dealer", "Curator", "Security Chief", "Restoration Expert",
+                "Art Student", "Wealthy Patron", "Insurance Appraiser", "Janitor", "Event Planner",
+                "Art Critic", "Auction House Rep", "Private Collector", "Gallery Assistant", "Photographer", "Caterer"
+            ]
         }
     ];
     
@@ -414,6 +431,20 @@ const GameManager = (function() {
                 '--font-family': 'Arial, sans-serif'
             },
             icon: '🏫'
+        },
+        gallery_heist: {
+            name: 'Modern Gallery',
+            cssVars: {
+                '--bg-gradient': 'linear-gradient(135deg, #2C3E50 0%, #4CA1AF 100%)',
+                '--primary': '#E74C3C',
+                '--secondary': '#3498DB',
+                '--accent': '#F1C40F',
+                '--text': '#ECF0F1',
+                '--card-bg': 'rgba(44, 62, 80, 0.9)',
+                '--button-gradient': 'linear-gradient(145deg, #E74C3C, #C0392B)',
+                '--font-family': '"Helvetica Neue", sans-serif'
+            },
+            icon: '🎨'
         }
     };
     
